@@ -14,6 +14,7 @@ This project demonstrates how to containerize a static website using Docker and 
 
 ## Project Structure
 
+```text
 Depoly_static_website/
 │
 ├── Dockerfile
@@ -23,6 +24,7 @@ Depoly_static_website/
 └── images/
     ├── deployment-running.png
     └── website-output.png
+```
 
 ## Prerequisites
 
@@ -32,39 +34,80 @@ Depoly_static_website/
 * Git
 
 ## Step 1: Build Docker Image
->> docker build -t lakshana-web:v1 .
+
+```bash
+docker build -t lakshana-web:v1 .
+```
 
 Verify the image:
->> docker images
+
+```bash
+docker images
+```
 
 ## Step 2: Load Image into Minikube
->> minikube image load lakshana-web:v1
+
+```bash
+minikube image load lakshana-web:v1
+```
 
 Verify the image:
->> minikube image ls
+
+```bash
+minikube image ls
+```
 
 ## Step 3: Deploy the Application
->> kubectl apply -f deployment.yaml
+
+```bash
+kubectl apply -f deployment.yaml
+```
 
 ## Step 4: Verify Kubernetes Resources
+
 Check Nodes:
->> kubectl get nodes
+
+```bash
+kubectl get nodes
+```
 
 Check Pods:
->> kubectl get pods
+
+```bash
+kubectl get pods
+```
 
 Check Deployments:
->> kubectl get deployments
+
+```bash
+kubectl get deployments
+```
 
 Check Services:
->> kubectl get svc
+
+```bash
+kubectl get svc
+```
 
 ## Step 5: Access the Website
+
 Get the application URL:
 
+```bash
 minikube service web-ser --url
+```
 
 Open the generated URL in your browser.
+
+## Deployment Output
+
+### Kubernetes Resources
+
+The following screenshot shows the Kubernetes node, deployment, pods, and service running successfully.
+
+### Website Output
+
+The following screenshot shows the static website deployed and accessed through Kubernetes.
 
 ## Kubernetes Resources Used
 
@@ -83,6 +126,7 @@ Open the generated URL in your browser.
 
 ## Commands Used
 
+```bash
 docker build -t lakshana-web:v1 .
 
 minikube image load lakshana-web:v1
@@ -98,6 +142,7 @@ kubectl get deployments
 kubectl get svc
 
 minikube service web-ser --url
+```
 
 ## Learning Outcomes
 
@@ -108,3 +153,4 @@ minikube service web-ser --url
 * Exposing Applications using NodePort
 * Running Kubernetes Locally with Minikube
 
+##
