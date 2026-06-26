@@ -61,7 +61,9 @@ Check Services:
 
 ## Step 5: Access the Website
 Get the application URL:
+
 minikube service web-ser --url
+
 Open the generated URL in your browser.
 
 ## Kubernetes Resources Used
