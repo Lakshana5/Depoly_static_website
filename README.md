@@ -33,11 +33,13 @@ Depoly_static_website/
 
 ## Step 1: Build Docker Image
 >> docker build -t lakshana-web:v1 .
+
 Verify the image:
 >> docker images
 
 ## Step 2: Load Image into Minikube
 >> minikube image load lakshana-web:v1
+
 Verify the image:
 >> minikube image ls
 
@@ -47,15 +49,17 @@ Verify the image:
 ## Step 4: Verify Kubernetes Resources
 Check Nodes:
 >> kubectl get nodes
+
 Check Pods:
 >> kubectl get pods
+
 Check Deployments:
 >> kubectl get deployments
+
 Check Services:
 >> kubectl get svc
 
 ## Step 5: Access the Website
-
 Get the application URL:
 minikube service web-ser --url
 Open the generated URL in your browser.
