@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: nginx-website
-        image: lakshana-web:v1
+        image: lakshana-web:v2
         imagePullPolicy: Never
         ports:
         - containerPort: 80
