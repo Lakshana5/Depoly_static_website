@@ -3,152 +3,782 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lakshana Cloud Lab</title>
-
+<title>Lakshana K — DevOps Engineer</title>
+<meta name="description" content="Lakshana K — DevOps Engineer. AWS, Docker, CI/CD, Linux, Monitoring & Automation.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Segoe UI',sans-serif;
-}
+  :root{
+    --bg:#0a0f1c;
+    --bg-soft:#0d1426;
+    --panel:#121b30;
+    --panel-2:#0f1726;
+    --border:#22304d;
+    --border-soft:#1a2640;
+    --accent:#ff9f43;
+    --accent-soft:rgba(255,159,67,.13);
+    --accent-dim:rgba(255,159,67,.35);
+    --teal:#5eead4;
+    --teal-soft:rgba(94,234,212,.13);
+    --success:#34d399;
+    --text:#e8edf5;
+    --muted:#8a99b8;
+    --dim:#566a8c;
+    --mono:'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    --sans:'Inter', -apple-system, system-ui, sans-serif;
+    --radius:10px;
+    --maxw:1120px;
+  }
 
-body{
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,0.045) 1px, transparent 0);
+    background-size:28px 28px;
+  }
+  a{color:inherit; text-decoration:none;}
+  ul{list-style:none;}
+  img,svg{display:block;}
+  .container{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
+  ::selection{background:var(--accent-soft); color:var(--accent);}
+  :focus-visible{outline:2px solid var(--teal); outline-offset:3px; border-radius:4px;}
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:.72rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:inline-flex;
     align-items:center;
-    background:linear-gradient(135deg,#0f172a,#1e3a8a,#06b6d4);
-    overflow:hidden;
-}
-
-body::before{
-    content:'';
-    position:absolute;
-    width:500px;
-    height:500px;
-    background:#38bdf8;
+    gap:8px;
+    font-weight:600;
+  }
+  .eyebrow::before{
+    content:"";
+    width:6px; height:6px;
+    background:var(--accent);
     border-radius:50%;
-    filter:blur(150px);
-    top:-100px;
-    left:-100px;
-}
+    box-shadow:0 0 0 3px var(--accent-soft);
+  }
 
-body::after{
-    content:'';
-    position:absolute;
-    width:400px;
-    height:400px;
-    background:#8b5cf6;
-    border-radius:50%;
-    filter:blur(150px);
-    bottom:-100px;
-    right:-100px;
-}
+  h1,h2,h3{font-family:var(--mono); font-weight:700; letter-spacing:-.01em; color:var(--text);}
 
-.container{
-    position:relative;
-    z-index:1;
-    width:90%;
-    max-width:850px;
-    padding:50px;
-    text-align:center;
-    background:rgba(255,255,255,0.08);
-    border:1px solid rgba(255,255,255,0.2);
-    backdrop-filter:blur(20px);
-    border-radius:25px;
-    color:white;
-    box-shadow:0 0 40px rgba(0,0,0,0.3);
-}
+  /* ===== Pipeline Nav ===== */
+  .pipeline-nav{
+    position:sticky; top:0; z-index:100;
+    background:rgba(10,15,28,.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .pipeline-nav__inner{
+    max-width:var(--maxw); margin:0 auto; padding:0 24px;
+    height:64px;
+    display:flex; align-items:center; justify-content:space-between;
+    gap:20px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:var(--mono); font-weight:700; font-size:.95rem;
+    flex-shrink:0;
+  }
+  .brand__mark{
+    width:30px; height:30px; border-radius:7px;
+    background:linear-gradient(135deg, var(--accent), var(--teal));
+    color:#0a0f1c; display:flex; align-items:center; justify-content:center;
+    font-size:.8rem; font-weight:800;
+  }
+  .brand__status{
+    display:flex; align-items:center; gap:6px;
+    font-size:.65rem; color:var(--dim); font-family:var(--mono);
+    text-transform:uppercase; letter-spacing:.08em;
+  }
+  .pulse-dot{
+    width:7px; height:7px; border-radius:50%; background:var(--success);
+    box-shadow:0 0 0 0 rgba(52,211,153,.6);
+    animation:pulse 2.2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(52,211,153,.55);}
+    70%{box-shadow:0 0 0 7px rgba(52,211,153,0);}
+    100%{box-shadow:0 0 0 0 rgba(52,211,153,0);}
+  }
 
-.logo{
-    font-size:60px;
-}
+  .stages{
+    display:flex; align-items:center; list-style:none;
+    overflow-x:auto; scrollbar-width:none;
+  }
+  .stages::-webkit-scrollbar{display:none;}
+  .stage{display:flex; align-items:center;}
+  .stage__line{
+    width:18px; height:1px; background:var(--border); flex-shrink:0;
+    transition:background .4s ease;
+  }
+  .stage.is-passed .stage__line{background:var(--success);}
+  .stage__btn{
+    display:flex; align-items:center; gap:6px;
+    padding:7px 10px; border-radius:7px;
+    font-family:var(--mono); font-size:.68rem; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--dim); white-space:nowrap;
+    transition:color .3s ease, background .3s ease;
+  }
+  .stage__btn:hover{color:var(--text); background:var(--panel-2);}
+  .stage__num{
+    width:16px; height:16px; border-radius:50%;
+    border:1.5px solid var(--border);
+    display:flex; align-items:center; justify-content:center;
+    font-size:.55rem; color:var(--dim); flex-shrink:0;
+    transition:all .3s ease;
+  }
+  .stage.is-active .stage__btn{color:var(--accent);}
+  .stage.is-active .stage__num{border-color:var(--accent); color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft);}
+  .stage.is-passed .stage__num{border-color:var(--success); background:var(--success); color:#06281c;}
+  .stage.is-passed .stage__num svg{width:9px; height:9px;}
+  .stage__num svg{display:none;}
+  .stage.is-passed .stage__num span{display:none;}
+  .stage.is-passed .stage__num svg{display:block;}
 
-h1{
-    margin-top:15px;
-    font-size:48px;
-}
+  /* ===== Buttons ===== */
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:13px 22px; border-radius:8px;
+    font-family:var(--mono); font-size:.85rem; font-weight:600;
+    border:1px solid transparent; cursor:pointer;
+    transition:transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+  }
+  .btn--primary{background:var(--accent); color:#1a1206;}
+  .btn--primary:hover{box-shadow:0 8px 24px -8px rgba(255,159,67,.55); transform:translateY(-1px);}
+  .btn--ghost{background:transparent; border-color:var(--border); color:var(--text);}
+  .btn--ghost:hover{border-color:var(--teal); color:var(--teal);}
 
-h2{
-    margin-top:10px;
-    color:#cbd5e1;
-    font-weight:400;
-}
+  /* ===== Hero ===== */
+  .hero{padding:64px 0 80px;}
+  .hero__grid{
+    display:grid; grid-template-columns:1.1fr 1fr; gap:56px; align-items:start;
+  }
+  .hero__intro{padding-top:8px;}
+  .id-card{
+    display:inline-flex; align-items:center; gap:13px;
+    background:var(--panel); border:1px solid var(--border-soft);
+    border-radius:50px; padding:7px 18px 7px 7px; margin-bottom:20px;
+  }
+  .id-card__avatar{
+    position:relative; flex-shrink:0;
+    width:50px; height:50px; border-radius:50%;
+    border:2px solid var(--accent);
+    padding:2px; background:var(--bg);
+  }
+  .id-card__avatar img{
+    width:100%; height:100%; object-fit:cover; border-radius:50%; display:block;
+  }
+  .id-card__dot{
+    position:absolute; bottom:-2px; right:-2px;
+    width:13px; height:13px; border-radius:50%;
+    background:var(--success); border:2px solid var(--panel);
+  }
+  .id-card__text{display:flex; flex-direction:column; line-height:1.3;}
+  .id-card__name{font-family:var(--mono); font-size:.82rem; font-weight:700;}
+  .id-card__role{font-family:var(--mono); font-size:.66rem; color:var(--dim); text-transform:uppercase; letter-spacing:.05em;}
+  .hero__name{
+    font-size:clamp(2.4rem, 5.4vw, 4rem);
+    margin:16px 0 6px;
+    line-height:1.05;
+  }
+  .hero__role{
+    color:var(--teal); font-family:var(--mono); font-size:1.05rem;
+    font-weight:600; margin-bottom:18px;
+  }
+  .hero__summary{color:var(--muted); font-size:1rem; max-width:540px; margin-bottom:30px;}
+  .hero__cta{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:40px;}
 
-p{
-    margin-top:25px;
-    line-height:1.8;
-    font-size:18px;
-}
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  .stat{
+    background:var(--panel); border:1px solid var(--border-soft);
+    border-radius:var(--radius); padding:14px 10px; text-align:center;
+  }
+  .stat__value{display:block; font-family:var(--mono); font-size:1.5rem; font-weight:800; color:var(--accent);}
+  .stat__label{display:block; font-size:.66rem; color:var(--dim); text-transform:uppercase; letter-spacing:.05em; margin-top:4px;}
 
-.tech{
-    margin-top:30px;
-}
+  /* ===== Terminal ===== */
+  .terminal{
+    background:var(--panel); border:1px solid var(--border);
+    border-radius:12px; overflow:hidden;
+    box-shadow:0 30px 60px -30px rgba(0,0,0,.7);
+  }
+  .terminal__bar{
+    background:var(--panel-2); padding:10px 14px;
+    display:flex; align-items:center; gap:8px;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .dot{width:10px; height:10px; border-radius:50%;}
+  .dot--r{background:#ff5f57;} .dot--y{background:#febc2e;} .dot--g{background:#28c840;}
+  .terminal__title{
+    margin-left:8px; font-family:var(--mono); font-size:.72rem; color:var(--dim);
+  }
+  .terminal__body{
+    padding:22px 20px 26px; font-family:var(--mono); font-size:.86rem;
+    min-height:230px;
+  }
+  .term-line{margin-bottom:13px;}
+  .term-prompt{color:var(--teal);}
+  .term-output{color:var(--text); display:block; margin-top:4px; padding-left:2px;}
+  .term-output.is-status{color:var(--success);}
+  .cursor{
+    display:inline-block; width:8px; height:1.1em; background:var(--accent);
+    vertical-align:middle; margin-left:4px;
+    animation:blink 1s steps(1) infinite;
+  }
+  @keyframes blink{50%{opacity:0;}}
 
-.tech span{
-    display:inline-block;
-    margin:8px;
-    padding:10px 18px;
-    border-radius:30px;
-    background:rgba(255,255,255,0.15);
-}
+  /* ===== Section shell ===== */
+  .hero, .section{scroll-margin-top:78px;}
+  .section{padding:84px 0;}
+  .section--alt{background:linear-gradient(180deg, transparent, rgba(255,255,255,.012), transparent); border-top:1px solid var(--border-soft); border-bottom:1px solid var(--border-soft);}
+  .section__head{margin-bottom:38px;}
+  .section__head h2{font-size:1.7rem; margin-top:10px;}
+  .section__sub{color:var(--muted); margin-top:8px; max-width:560px;}
 
-.btn{
-    display:inline-block;
-    margin-top:30px;
-    text-decoration:none;
-    color:#0f172a;
-    background:white;
-    padding:14px 30px;
-    border-radius:40px;
-    font-weight:bold;
-    transition:0.3s;
-}
+  .reveal{opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in-view{opacity:1; transform:translateY(0);}
 
-.btn:hover{
-    transform:scale(1.05);
-}
+  /* ===== Skills ===== */
+  .skills-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .skill-card{
+    background:var(--panel); border:1px solid var(--border-soft);
+    border-radius:var(--radius); padding:18px 18px 16px;
+    border-top:2px solid var(--accent-dim);
+  }
+  .skill-card:nth-child(even){border-top-color:rgba(94,234,212,.45);}
+  .skill-card h3{font-size:.78rem; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); margin-bottom:12px; font-weight:600;}
+  .pills{display:flex; flex-wrap:wrap; gap:6px;}
+  .pill{
+    font-family:var(--mono); font-size:.72rem; color:var(--text);
+    background:var(--panel-2); border:1px solid var(--border-soft);
+    padding:5px 9px; border-radius:6px;
+  }
 
-footer{
-    margin-top:35px;
-    color:#dbeafe;
-}
+  /* ===== Experience ===== */
+  .job-card{
+    background:var(--panel); border:1px solid var(--border-soft);
+    border-radius:14px; padding:30px 30px 10px;
+  }
+  .job-card__head{
+    display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;
+    padding-bottom:22px; border-bottom:1px solid var(--border-soft); margin-bottom:22px;
+  }
+  .job-card__head h3{font-size:1.2rem;}
+  .job-card__company{color:var(--teal); font-family:var(--mono); font-size:.85rem; margin-top:4px;}
+  .job-card__date{
+    font-family:var(--mono); font-size:.75rem; color:var(--dim);
+    background:var(--panel-2); padding:7px 12px; border-radius:6px; white-space:nowrap;
+    border:1px solid var(--border-soft);
+  }
+  .checklist{display:grid; gap:16px; padding-bottom:24px;}
+  .checklist li{display:flex; align-items:flex-start; gap:12px; color:var(--muted); font-size:.95rem;}
+  .check-ic{
+    flex-shrink:0; width:19px; height:19px; border-radius:50%;
+    background:var(--teal-soft); border:1px solid rgba(94,234,212,.4);
+    display:flex; align-items:center; justify-content:center; margin-top:2px;
+  }
+  .check-ic svg{width:10px; height:10px;}
+
+  /* ===== Projects ===== */
+  .projects-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:18px;}
+  .project-card{
+    background:var(--panel); border:1px solid var(--border-soft);
+    border-radius:var(--radius); padding:22px;
+    transition:border-color .3s ease, transform .3s ease;
+  }
+  .project-card:hover{border-color:var(--accent-dim); transform:translateY(-2px);}
+  .project-card__top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px;}
+  .project-card h3{font-size:1rem; line-height:1.35;}
+  .badge{
+    display:flex; align-items:center; gap:6px; flex-shrink:0;
+    font-family:var(--mono); font-size:.62rem; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--success); background:rgba(52,211,153,.1); border:1px solid rgba(52,211,153,.3);
+    padding:4px 8px; border-radius:5px; white-space:nowrap;
+  }
+  .badge .pulse-dot{width:5px; height:5px;}
+  .project-card p{color:var(--muted); font-size:.9rem; margin-bottom:14px;}
+  .tags{display:flex; flex-wrap:wrap; gap:6px;}
+  .tag{
+    font-family:var(--mono); font-size:.68rem; color:var(--accent);
+    background:var(--accent-soft); padding:4px 8px; border-radius:5px;
+  }
+
+  /* ===== Release: certs + education ===== */
+  .release-grid{display:grid; grid-template-columns:1.2fr 1fr; gap:18px;}
+  .panel{background:var(--panel); border:1px solid var(--border-soft); border-radius:var(--radius); padding:24px;}
+  .panel h3{font-size:.85rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:18px;}
+  .cert-row{
+    display:flex; justify-content:space-between; align-items:center; gap:12px;
+    padding:13px 0; border-bottom:1px solid var(--border-soft);
+  }
+  .cert-row:last-child{border-bottom:none; padding-bottom:0;}
+  .cert-row__name{font-weight:600; font-size:.92rem;}
+  .cert-row__issuer{color:var(--dim); font-size:.78rem; margin-top:2px;}
+  .cert-row__date{font-family:var(--mono); font-size:.72rem; color:var(--teal); white-space:nowrap;}
+  .edu-degree{font-size:1.02rem; font-weight:700; margin-bottom:6px;}
+  .edu-school{color:var(--muted); font-size:.9rem; margin-bottom:14px;}
+  .edu-cgpa{
+    display:inline-flex; align-items:center; gap:8px; font-family:var(--mono);
+    background:var(--panel-2); border:1px solid var(--border-soft); border-radius:7px;
+    padding:9px 13px; font-size:.85rem;
+  }
+  .edu-cgpa strong{color:var(--accent); font-size:1.1rem;}
+
+  /* ===== Live / Contact ===== */
+  .live{text-align:center;}
+  .live h2{font-size:clamp(1.7rem, 4vw, 2.6rem); max-width:680px; margin:0 auto 16px;}
+  .live p{color:var(--muted); max-width:480px; margin:0 auto 36px;}
+  .contact-grid{display:flex; justify-content:center; gap:14px; flex-wrap:wrap; margin-bottom:50px;}
+  .contact-card{
+    background:var(--panel); border:1px solid var(--border-soft); border-radius:var(--radius);
+    padding:16px 22px; display:flex; align-items:center; gap:12px; min-width:230px;
+    transition:border-color .25s ease, transform .25s ease;
+  }
+  .contact-card:hover{border-color:var(--teal); transform:translateY(-2px);}
+  .contact-card__ic{
+    width:36px; height:36px; border-radius:8px; background:var(--teal-soft);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .contact-card__ic svg{width:17px; height:17px; color:var(--teal);}
+  .contact-card__label{font-size:.65rem; color:var(--dim); text-transform:uppercase; letter-spacing:.05em; text-align:left;}
+  .contact-card__value{font-family:var(--mono); font-size:.86rem; text-align:left; margin-top:2px;}
+
+  footer{
+    border-top:1px solid var(--border-soft); padding:26px 0 40px;
+    display:flex; justify-content:center; gap:10px; flex-wrap:wrap;
+    font-family:var(--mono); font-size:.74rem; color:var(--dim);
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width:860px){
+    .hero__grid{grid-template-columns:1fr; gap:40px;}
+    .skills-grid{grid-template-columns:repeat(2,1fr);}
+    .projects-grid{grid-template-columns:1fr;}
+    .release-grid{grid-template-columns:1fr;}
+    .stage__btn span.stage__label{display:none;}
+  }
+  @media (max-width:560px){
+    .stats{grid-template-columns:repeat(2,1fr);}
+    .skills-grid{grid-template-columns:1fr;}
+    .pipeline-nav__inner{gap:10px;}
+    .brand__status{display:none;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
+    html{scroll-behavior:auto;}
+  }
+
+  @media print{
+    .pipeline-nav, .hero__terminal, .hero__cta, footer{display:none !important;}
+    body{background:#fff; color:#000;}
+    .panel,.skill-card,.project-card,.job-card,.terminal,.stat{border:1px solid #ccc; box-shadow:none;}
+    a{color:#000;}
+  }
 </style>
 </head>
-
 <body>
 
-<div class="container">
+<!-- ===================== PIPELINE NAV ===================== -->
+<nav class="pipeline-nav">
+  <div class="pipeline-nav__inner">
+    <a href="#top" class="brand">
+      <span class="brand__mark">LK</span>
+      <span class="brand__status"><span class="pulse-dot"></span>operational</span>
+    </a>
+    <ul class="stages" id="stages">
+      <li class="stage is-active" data-target="top">
+        <a class="stage__btn" href="#top"><span class="stage__num"><span>1</span><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#06281c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="stage__label">Source</span></a>
+      </li>
+      <li class="stage" data-target="build">
+        <span class="stage__line"></span>
+        <a class="stage__btn" href="#build"><span class="stage__num"><span>2</span><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#06281c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="stage__label">Build</span></a>
+      </li>
+      <li class="stage" data-target="test">
+        <span class="stage__line"></span>
+        <a class="stage__btn" href="#test"><span class="stage__num"><span>3</span><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#06281c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="stage__label">Test</span></a>
+      </li>
+      <li class="stage" data-target="deploy">
+        <span class="stage__line"></span>
+        <a class="stage__btn" href="#deploy"><span class="stage__num"><span>4</span><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#06281c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="stage__label">Deploy</span></a>
+      </li>
+      <li class="stage" data-target="release">
+        <span class="stage__line"></span>
+        <a class="stage__btn" href="#release"><span class="stage__num"><span>5</span><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#06281c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="stage__label">Release</span></a>
+      </li>
+      <li class="stage" data-target="live">
+        <span class="stage__line"></span>
+        <a class="stage__btn" href="#live"><span class="stage__num"><span>6</span><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#06281c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="stage__label">Live</span></a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
-    <div class="logo">☁️</div>
-
-    <h1>Lakshana Cloud Lab</h1>
-
-    <h2>Welcome to My First Kubernetes Project</h2>
-
-    <p>
-        Hello! I'm Lakshana, working as a DevOps Engineer.
-        This website is deployed using Nginx and Kubernetes as part
-        of my hands-on learning journey in Cloud Computing,
-        Containerization, and DevOps Automation.
-    </p>
-
-    <div class="tech">
-        <span>🐳 Docker</span>
-        <span>☸ Kubernetes</span>
-        <span>☁ AWS</span>
-        <span>🐧 Linux</span>
-        <span>⚙ DevOps</span>
+<!-- ===================== HERO / SOURCE ===================== -->
+<section id="top" class="hero">
+  <div class="container hero__grid">
+    <div class="hero__intro reveal in-view">
+      <div class="id-card">
+        <span class="id-card__avatar">
+          <img src="assets/profile.jpg" alt="Lakshana K">
+          <span class="id-card__dot"></span>
+        </span>
+        <span class="id-card__text">
+          <span class="id-card__name">Lakshana K</span>
+          <span class="id-card__role">Available for opportunities</span>
+        </span>
+      </div>
+      <span class="eyebrow">Source · 01</span>
+      <h1 class="hero__name">Lakshana K</h1>
+      <p class="hero__role">DevOps Engineer — Cloud Infrastructure &amp; CI/CD Automation</p>
+      <p class="hero__summary">I build and manage cloud infrastructure on AWS and ship automated CI/CD pipelines that get applications to production reliably. Hands-on with Docker, Linux administration and shell scripting — and I keep an eye on everything in production with Grafana, CloudWatch and Nagios.</p>
+      <div class="hero__cta">
+        <a href="#live" class="btn btn--primary">Let's talk →</a>
+        <button class="btn btn--ghost" id="printBtn" type="button">Download résumé</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><span class="stat__value">04</span><span class="stat__label">Projects</span></div>
+        <div class="stat"><span class="stat__value">03</span><span class="stat__label">Certifications</span></div>
+        <div class="stat"><span class="stat__value">10+</span><span class="stat__label">Tools &amp; platforms</span></div>
+        <div class="stat"><span class="stat__value">8.2</span><span class="stat__label">CGPA</span></div>
+      </div>
     </div>
 
-    <a href="#" class="btn">🚀 Explore My Journey</a>
+    <div class="hero__terminal" aria-hidden="true">
+      <div class="terminal">
+        <div class="terminal__bar">
+          <span class="dot dot--r"></span><span class="dot dot--y"></span><span class="dot dot--g"></span>
+          <span class="terminal__title">lakshana@devops:~</span>
+        </div>
+        <div class="terminal__body" id="terminalBody"></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <footer>
-        Built with ❤️ by Lakshana K
-    </footer>
+<!-- ===================== BUILD / SKILLS ===================== -->
+<section id="build" class="section">
+  <div class="container">
+    <div class="section__head reveal">
+      <span class="eyebrow">Build · 02</span>
+      <h2>Stack &amp; tools</h2>
+      <p class="section__sub">What I build with, day to day — from provisioning cloud infrastructure to keeping it monitored and secure.</p>
+    </div>
+    <div class="skills-grid reveal">
+      <div class="skill-card">
+        <h3>Cloud · AWS</h3>
+        <div class="pills">
+          <span class="pill">EC2</span><span class="pill">S3</span><span class="pill">IAM</span><span class="pill">VPC</span><span class="pill">S3 Versioning</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h3>DevOps &amp; Tools</h3>
+        <div class="pills">
+          <span class="pill">Git</span><span class="pill">GitLab</span><span class="pill">CI/CD</span><span class="pill">Docker</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h3>Monitoring &amp; Logging</h3>
+        <div class="pills">
+          <span class="pill">Grafana</span><span class="pill">CloudWatch</span><span class="pill">Nagios</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h3>Operating Systems</h3>
+        <div class="pills">
+          <span class="pill">Linux (Ubuntu)</span><span class="pill">Windows Server</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h3>Networking</h3>
+        <div class="pills">
+          <span class="pill">TCP/IP</span><span class="pill">DNS</span><span class="pill">DHCP</span><span class="pill">Security Groups</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h3>Scripting &amp; Virtualization</h3>
+        <div class="pills">
+          <span class="pill">Shell Scripting</span><span class="pill">VMware Workstation</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h3>Web &amp; Servers</h3>
+        <div class="pills">
+          <span class="pill">Apache</span><span class="pill">PHP</span><span class="pill">Composer</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h3>Backup &amp; Storage</h3>
+        <div class="pills">
+          <span class="pill">AWS S3</span><span class="pill">WinSCP</span>
+        </div>
+      </div>
+      <div class="skill-card">
+        <h3>File Services</h3>
+        <div class="pills">
+          <span class="pill">Samba Shares</span><span class="pill">Domain &amp; Group Access</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-</div>
+<!-- ===================== TEST / EXPERIENCE ===================== -->
+<section id="test" class="section section--alt">
+  <div class="container">
+    <div class="section__head reveal">
+      <span class="eyebrow">Test · 03</span>
+      <h2>Experience</h2>
+      <p class="section__sub">Where the stack gets tested against real infrastructure, real users and real incidents.</p>
+    </div>
+    <div class="job-card reveal">
+      <div class="job-card__head">
+        <div>
+          <h3>DevOps Engineer</h3>
+          <p class="job-card__company">AurumTechServices · Coimbatore</p>
+        </div>
+        <span class="job-card__date">Mar 2025 — Present</span>
+      </div>
+      <ul class="checklist">
+        <li><span class="check-ic"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#5eead4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Provisioned and configured Linux and Windows-based environments to support application deployment, ensuring performance, security and high availability.</li>
+        <li><span class="check-ic"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#5eead4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Implemented centralized authentication by integrating Ubuntu systems with Active Directory using Kerberos and SSSD.</li>
+        <li><span class="check-ic"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#5eead4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Designed and managed secure file-sharing infrastructure using Samba with domain-based access control.</li>
+        <li><span class="check-ic"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#5eead4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Built and maintained Development (DEV) and Staging (STG) environments to support CI/CD pipelines and application testing workflows.</li>
+        <li><span class="check-ic"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#5eead4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Provisioned and managed AWS cloud infrastructure — EC2, IAM, VPC and S3 — for scalable, secure deployments.</li>
+        <li><span class="check-ic"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#5eead4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Automated backup and recovery processes using AWS S3 versioning, shell scripting and cron jobs.</li>
+        <li><span class="check-ic"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#5eead4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Managed database migrations between development and production environments using AWS CLI and S3.</li>
+        <li><span class="check-ic"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#5eead4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Deployed and maintained web applications using Apache, PHP and MySQL across virtualized and cloud environments.</li>
+        <li><span class="check-ic"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#5eead4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Monitored system performance and infrastructure health using Grafana, AWS CloudWatch and Nagios for proactive issue resolution.</li>
+        <li><span class="check-ic"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#5eead4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Designed and implemented GitLab CI/CD pipelines with self-hosted runners for automated build, test and deployment.</li>
+        <li><span class="check-ic"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#5eead4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Containerized applications using Docker for consistency across development, testing and production.</li>
+        <li><span class="check-ic"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-6" stroke="#5eead4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Troubleshot and resolved infrastructure, network and deployment issues to maintain system reliability and uptime.</li>
+      </ul>
+    </div>
+  </div>
+</section>
 
+<!-- ===================== DEPLOY / PROJECTS ===================== -->
+<section id="deploy" class="section">
+  <div class="container">
+    <div class="section__head reveal">
+      <span class="eyebrow">Deploy · 04</span>
+      <h2>Projects shipped</h2>
+      <p class="section__sub">Self-driven builds that mirror real production scenarios.</p>
+    </div>
+    <div class="projects-grid reveal">
+      <div class="project-card">
+        <div class="project-card__top">
+          <h3>Active Directory Integrated Samba File Server</h3>
+          <span class="badge"><span class="pulse-dot"></span>Deployed</span>
+        </div>
+        <p>Secure Samba file server integrated with Active Directory using Kerberos and SSSD for centralized authentication, with role-based access control validated against unauthorized access.</p>
+        <div class="tags"><span class="tag">Samba</span><span class="tag">Kerberos</span><span class="tag">SSSD</span><span class="tag">RBAC</span></div>
+      </div>
+      <div class="project-card">
+        <div class="project-card__top">
+          <h3>Dockerized Laravel Deployment with Nginx &amp; MySQL</h3>
+          <span class="badge"><span class="pulse-dot"></span>Deployed</span>
+        </div>
+        <p>Containerized and deployed a Laravel application using Docker Compose with Apache and PHP-FPM, including MySQL setup, backup, restoration, and inter-container networking.</p>
+        <div class="tags"><span class="tag">Docker Compose</span><span class="tag">Laravel</span><span class="tag">MySQL</span><span class="tag">PHP-FPM</span></div>
+      </div>
+      <div class="project-card">
+        <div class="project-card__top">
+          <h3>AWS Cloud Infrastructure Deployment</h3>
+          <span class="badge"><span class="pulse-dot"></span>Deployed</span>
+        </div>
+        <p>Provisioned EC2, VPC, IAM and Security Groups, configured Amazon S3 with versioning, and managed EC2 access control, snapshots and basic monitoring.</p>
+        <div class="tags"><span class="tag">EC2</span><span class="tag">VPC</span><span class="tag">IAM</span><span class="tag">S3</span></div>
+      </div>
+      <div class="project-card">
+        <div class="project-card__top">
+          <h3>Centralized Monitoring with Nagios</h3>
+          <span class="badge"><span class="pulse-dot"></span>Deployed</span>
+        </div>
+        <p>Deployed and configured Nagios Core on Ubuntu, integrating NRPE and NSClient++ to monitor Linux and Windows systems — tracking CPU, memory and disk to improve issue detection.</p>
+        <div class="tags"><span class="tag">Nagios Core</span><span class="tag">NRPE</span><span class="tag">NSClient++</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== RELEASE / CERTS + EDUCATION ===================== -->
+<section id="release" class="section section--alt">
+  <div class="container">
+    <div class="section__head reveal">
+      <span class="eyebrow">Release · 05</span>
+      <h2>Certifications &amp; education</h2>
+      <p class="section__sub">Signed off and shipped to production.</p>
+    </div>
+    <div class="release-grid reveal">
+      <div class="panel">
+        <h3>Certifications</h3>
+        <div class="cert-row">
+          <div>
+            <div class="cert-row__name">AWS Certified Cloud Practitioner</div>
+            <div class="cert-row__issuer">Amazon Web Services</div>
+          </div>
+          <span class="cert-row__date">Nov 2025 — Nov 2028</span>
+        </div>
+        <div class="cert-row">
+          <div>
+            <div class="cert-row__name">IAM &amp; Cloud Security</div>
+            <div class="cert-row__issuer">Great Learning</div>
+          </div>
+          <span class="cert-row__date">2024</span>
+        </div>
+        <div class="cert-row">
+          <div>
+            <div class="cert-row__name">Cloud Networking</div>
+            <div class="cert-row__issuer">Great Learning</div>
+          </div>
+          <span class="cert-row__date">2024</span>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Education</h3>
+        <div class="edu-degree">B.E. — Computer Science &amp; Engineering</div>
+        <div class="edu-school">United Institute of Technology, Anna University</div>
+        <div class="edu-cgpa">CGPA <strong>8.2</strong> / 10</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== LIVE / CONTACT ===================== -->
+<section id="live" class="section live">
+  <div class="container">
+    <span class="eyebrow">Live · 06</span>
+    <h2>Hiring for a DevOps role? Let's talk.</h2>
+    <p>Currently based in Coimbatore, Tamil Nadu — open to remote and on-site opportunities.</p>
+    <div class="contact-grid">
+      <a class="contact-card" href="mailto:lakshuviji609@gmail.com">
+        <span class="contact-card__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z" stroke-linejoin="round"/><path d="M4 6l8 7 8-7" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        <span><span class="contact-card__label">Email</span><span class="contact-card__value">lakshuviji609@gmail.com</span></span>
+      </a>
+      <a class="contact-card" href="tel:+919500591609">
+        <span class="contact-card__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4l4-1 2 5-2 2c1 3 3 5 6 6l2-2 5 2-1 4c-7 1-15-6-16-16z" stroke-linejoin="round"/></svg></span>
+        <span><span class="contact-card__label">Phone</span><span class="contact-card__value">+91 95005 91609</span></span>
+      </a>
+      <a class="contact-card" href="https://www.linkedin.com/in/lakshana-k-b6a006276/" target="_blank" rel="noopener">
+        <span class="contact-card__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 10v7M7 7v.5M11 17v-5a2 2 0 014 0v5M11 12v5" stroke-linecap="round"/></svg></span>
+        <span><span class="contact-card__label">LinkedIn</span><span class="contact-card__value">/in/lakshana-k</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© <span id="year"></span> Lakshana K</span>
+  <span>·</span>
+  <span>Last deployed <span id="deployDate"></span></span>
+  <span>·</span>
+  <span>Built with HTML, CSS &amp; a lot of YAML</span>
+</footer>
+
+<script>
+  // ----- Footer dates -----
+  document.getElementById('year').textContent = new Date().getFullYear();
+  document.getElementById('deployDate').textContent = new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+
+  // ----- Print -----
+  document.getElementById('printBtn').addEventListener('click', () => window.print());
+
+  // ----- Terminal typewriter -----
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const lines = [
+    { prompt: '$ whoami', output: 'lakshana-k — devops engineer', status:false },
+    { prompt: '$ cat location.txt', output: 'Coimbatore, Tamil Nadu, IN', status:false },
+    { prompt: '$ systemctl status career', output: '● active — building on AWS, Docker & CI/CD since Mar 2025', status:false },
+    { prompt: '$ status --check', output: '● available for new opportunities', status:true }
+  ];
+  const body = document.getElementById('terminalBody');
+
+  function typeText(el, text, speed, cb){
+    if(reduceMotion){ el.textContent = text; cb && cb(); return; }
+    let i = 0;
+    el.textContent = '';
+    const t = setInterval(() => {
+      el.textContent += text[i];
+      i++;
+      if(i >= text.length){ clearInterval(t); cb && cb(); }
+    }, speed);
+  }
+
+  function runLine(index){
+    if(index >= lines.length) return;
+    const { prompt, output, status } = lines[index];
+    const wrap = document.createElement('div');
+    wrap.className = 'term-line';
+    const p = document.createElement('span');
+    p.className = 'term-prompt';
+    wrap.appendChild(p);
+    body.appendChild(wrap);
+
+    typeText(p, prompt, 28, () => {
+      setTimeout(() => {
+        const o = document.createElement('span');
+        o.className = 'term-output' + (status ? ' is-status' : '');
+        wrap.appendChild(o);
+        typeText(o, output, 14, () => {
+          setTimeout(() => runLine(index + 1), 280);
+        });
+      }, 220);
+    });
+  }
+
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor';
+  setTimeout(() => {
+    runLine(0);
+    setTimeout(() => body.appendChild(cursor), lines.length * 900);
+  }, 350);
+
+  // ----- Scrollspy / pipeline progress -----
+  const stages = Array.from(document.querySelectorAll('.stage'));
+  const sections = stages.map(s => document.getElementById(s.dataset.target));
+  const order = stages.map(s => s.dataset.target);
+
+  function setStageState(activeId){
+    const activeIndex = order.indexOf(activeId);
+    stages.forEach((stage, i) => {
+      stage.classList.remove('is-active', 'is-passed');
+      if(i < activeIndex) stage.classList.add('is-passed');
+      else if(i === activeIndex) stage.classList.add('is-active');
+    });
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        setStageState(entry.target.id);
+      }
+    });
+  }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+
+  sections.forEach(sec => sec && observer.observe(sec));
+
+  // ----- Reveal on scroll -----
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => revealObserver.observe(el));
+</script>
 </body>
 </html>
